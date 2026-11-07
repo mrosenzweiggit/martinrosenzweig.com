@@ -1,0 +1,87 @@
+---
+import '../styles/global.css';
+import { languages, ui, type Lang, type UIKey } from '../i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  lang: Lang;
+  path: string;
+}
+
+const { title, description, lang, path } = Astro.props;
+const siteUrl = Astro.site ?? new URL('https://martinrosenzweig.com');
+const canonical = new URL(path, siteUrl).toString();
+const t = (key: UIKey) => ui[lang][key];
+const otherLang = lang === 'es' ? 'en' : 'es';
+const navItems: { key: UIKey; href: string }[] = [
+  { key: 'nav.data', href: `/${lang}/datos` },
+  { key: 'nav.softskills', href: `/${lang}/soft-skills` },
+  { key: 'nav.about', href: `/${lang}/sobre-mi` },
+  { key: 'nav.archive', href: `/${lang}/archivo` },
+  { key: 'nav.contact', href: `/${lang}/contacto` },
+];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (function () {
+        var saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.dataset.theme = saved;
+        }
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={new URL(`/es${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
+    <link rel="alternate" hreflang="en" href={new URL(`/en${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
+    <link rel="alternate" hreflang="x-default" href={new URL(`/es${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body class="min-h-dvh font-sans antialiased">
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:p-2">
+      {lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}
+    </a>
+
+    <header class="border-b border-[var(--color-border)]">
+      <nav class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-4" aria-label="Principal">
+        <a href={`/${lang}`} class="font-serif text-xl font-semibold">{t('site.name')}</a>
+        <ul class="flex flex-wrap gap-4 text-sm">
+          {navItems.map((item) => (
+            <li>
+              <a class="min-h-11 inline-flex items-center hover:underline" href={item.href}>{t(item.key)}</a>
+            </li>
+          ))}
+        </ul>
+        <div class="flex items-center gap-3 text-sm">
+          <a
+            class="min-h-11 inline-flex items-center font-medium"
+            href={`/${otherLang}`}
+            hreflang={otherLang}
+            aria-label={t('lang.switch')}
+          >
+            {languages[otherLang]}
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="contenido" class="mx-auto max-w-5xl px-5 py-12">
+      <slot />
+    </main>
+
+    <footer class="mx-auto max-w-5xl border-t border-[var(--color-border)] px-5 py-8 text-sm">
+      <p>© {new Date().getFullYear()} {t('site.name')}. {t('footer.rights')}</p>
+    </footer>
+  </body>
+</html>

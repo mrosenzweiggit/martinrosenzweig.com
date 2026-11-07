@@ -1,0 +1,19 @@
+---
+// Raíz: redirige al idioma del navegador; español por defecto.
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Martín Rosenzweig</title>
+    <script is:inline>
+      var lang = (navigator.language || '').toLowerCase().startsWith('en') ? 'en' : 'es';
+      location.replace('/' + lang);
+    </script>
+    <meta http-equiv="refresh" content="0;url=/es" />
+  </head>
+  <body>
+    <a href="/es">Español</a> · <a href="/en">English</a>
+  </body>
+</html>
