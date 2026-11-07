@@ -9,31 +9,37 @@
 
 :root {
   --color-bg: #fafaf7;
+  --color-surface: #f2f1ec;
   --color-text: #16181d;
   --color-muted: #5b606b;
   --color-border: #e6e4dd;
   --color-accent-data: #0b6e8a;
   --color-accent-softskills: #b4532a;
+  --color-on-accent: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --color-bg: #0f1115;
+    --color-surface: #171a21;
     --color-text: #e8e9ec;
     --color-muted: #9ca1ab;
-    --color-border: #22262e;
+    --color-border: #262b35;
     --color-accent-data: #4fb3cf;
     --color-accent-softskills: #e38b5f;
+    --color-on-accent: #0f1115;
   }
 }
 
 :root[data-theme='dark'] {
   --color-bg: #0f1115;
+  --color-surface: #171a21;
   --color-text: #e8e9ec;
   --color-muted: #9ca1ab;
-  --color-border: #22262e;
+  --color-border: #262b35;
   --color-accent-data: #4fb3cf;
   --color-accent-softskills: #e38b5f;
+  --color-on-accent: #0f1115;
 }
 
 html {
@@ -41,9 +47,59 @@ html {
   color: var(--color-text);
 }
 
+body {
+  line-height: 1.6;
+}
+
 :focus-visible {
   outline: 2px solid var(--color-accent-data);
   outline-offset: 2px;
+}
+
+/* Componentes base */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    color 150ms;
+}
+
+.btn-data {
+  background: var(--color-accent-data);
+  color: var(--color-on-accent);
+}
+
+.btn-data:hover {
+  opacity: 0.9;
+}
+
+.btn-outline {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-text);
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.surface {
+  background-color: var(--color-surface);
 }
 
 .prose {
@@ -58,7 +114,7 @@ html {
   --tw-prose-th-borders: var(--color-border);
   --tw-prose-td-borders: var(--color-border);
   font-size: 1.125rem;
-  line-height: 1.7;
+  line-height: 1.75;
   max-width: 68ch;
 }
 

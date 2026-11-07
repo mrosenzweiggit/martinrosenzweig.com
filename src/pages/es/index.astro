@@ -1,18 +1,54 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
 import { ui } from '../../i18n/ui';
+import { routes } from '../../i18n/routes';
+import { getEntriesFor } from '../../lib/articles';
 
 const t = ui.es;
+const recent = [...(await getEntriesFor('data', 'es')), ...(await getEntriesFor('softskills', 'es'))]
+  .sort((a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf())
+  .slice(0, 3);
 ---
 
-<BaseLayout title={`${t['site.name']} · ${t['home.title']}`} description={t['home.description']} lang="es" path="/es">
-  <section class="max-w-2xl space-y-6">
-    <p class="text-sm text-[var(--color-accent-data)]">{t['site.tagline']}</p>
-    <h1 class="font-serif text-4xl font-semibold leading-tight">{t['site.name']}</h1>
-    <p class="text-lg leading-relaxed">{t['home.intro']}</p>
-    <div class="flex flex-wrap gap-4 pt-2">
-      <a class="min-h-11 inline-flex items-center rounded border border-[var(--color-accent-data)] px-4 text-[var(--color-accent-data)]" href="/es/datos">{t['home.cta.data']}</a>
-      <a class="min-h-11 inline-flex items-center rounded border border-[var(--color-accent-softskills)] px-4 text-[var(--color-accent-softskills)]" href="/es/soft-skills">{t['home.cta.softskills']}</a>
+<BaseLayout
+  title={`${t['site.name']} · ${t['home.title']}`}
+  description={t['home.description']}
+  lang="es"
+  path={routes.es.home}
+  alt={routes.en.home}
+>
+  <section class="grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end">
+    <div>
+      <p class="eyebrow" style="color: var(--color-accent-data)">{t['site.tagline']}</p>
+      <h1 class="mt-4 font-serif text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
+        {t['home.headline']}
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed opacity-80">{t['home.intro']}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="btn btn-data" href={routes.es.data}>{t['home.cta.data']}</a>
+        <a class="btn btn-outline" href={routes.es.softskills}>{t['home.cta.softskills']}</a>
+      </div>
     </div>
+    <aside class="surface rounded-2xl border border-[var(--color-border)] p-6">
+      <p class="eyebrow opacity-60">{t['home.focus.label']}</p>
+      <p class="mt-3 font-serif text-xl leading-snug">{t['home.focus']}</p>
+    </aside>
   </section>
+
+  {
+    recent.length > 0 && (
+      <section class="mt-20">
+        <div class="mb-6 flex items-baseline justify-between gap-4 border-b border-[var(--color-border)] pb-3">
+          <h2 class="font-serif text-2xl font-semibold">{t['home.recent']}</h2>
+          <a class="text-sm underline underline-offset-4" href={routes.es.data}>{t['home.all']}</a>
+        </div>
+        <div class="grid gap-10 md:grid-cols-3">
+          {recent.map((entry) => (
+            <ArticleCard entry={entry} lang="es" />
+          ))}
+        </div>
+      </section>
+    )
+  }
 </BaseLayout>
