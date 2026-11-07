@@ -1,0 +1,42 @@
+---
+title: "Medallion Architecture? Sounds familiar…"
+summary: "Bronze, Silver and Gold look like a breakthrough, but they are decades-old data warehousing practices. What really changed, and what didn't."
+slug: medallion-architecture-sounds-familiar
+lang: en
+section: data
+category: Data Architecture
+tags: [medallion architecture, data warehouse, semantic layer, ELT]
+publishedAt: 2025-07-02
+translationKey: arquitectura-medallion
+draft: true
+---
+
+Over the past few months, I've seen a growing number of posts about Medallion Architecture, many of them presenting it as a modern breakthrough in how we manage data. But if you've been working in data warehousing for a while, you probably had the same reaction I did: this isn't new at all.
+
+In fact, what's now being called Bronze, Silver and Gold is a fresh coat of paint on practices we've followed for decades:
+
+- **Bronze** = Landing/Mirror area (raw data)
+- **Silver** = Staging area (cleansed and conformed data)
+- **Gold** = Data warehouse / data marts (curated, business-level tables)
+
+## Where the real difference is
+
+In "classic" data warehousing, the staging area, which Silver maps to, was usually a temporary layer. It was a step in the process: clean the data, transform it, and move on. The cleaned data wasn't something you'd normally keep around or expose to others.
+
+In Medallion Architecture, Silver is treated as a permanent layer. It isn't just a step, it's a destination. The data there is already cleaned and enriched, and it's stored in a way that makes it usable for others: analysts, data scientists, or other pipelines.
+
+## The semantic layer is not new either
+
+Whether it's implemented through Looker, Power BI, MicroStrategy or old-school OLAP cubes, the idea of separating logic from storage has been around for a long time.
+
+## So what really changed?
+
+Mostly the tools. We now work with scalable, cloud-native platforms like Databricks, Snowflake or BigQuery. We moved from ETL to ELT, and we write transformations in notebooks, SQL or dbt. Conceptually, though, we are still doing what we've always done: ingest, transform and deliver in layers.
+
+I'm not against giving things new names. Sometimes that helps teams align and communicate better. But good data architecture is timeless, and the best "innovations" often build on things we've known for years.
+
+My recommendation for anyone working in analytics: read about the origins of data warehousing, not just the technologies, but the why. Understand the original problems it tried to solve and the principles behind it. Once you do, you'll start to recognize that many of today's "new" architectures are the same ideas, rebranded.
+
+Are we reinventing the wheel, or just renaming it?
+
+*Originally published on [LinkedIn](https://www.linkedin.com/pulse/medallion-architecture-sounds-familiar-mart%C3%ADn-rosenzweig--sytwf/).*

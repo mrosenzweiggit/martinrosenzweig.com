@@ -1,0 +1,42 @@
+---
+title: "¿Arquitectura Medallion? Suena conocido…"
+summary: "Bronze, Silver y Gold parecen una novedad, pero son prácticas de data warehousing de hace décadas. Qué cambió de verdad y qué no."
+slug: arquitectura-medallion-suena-conocido
+lang: es
+section: data
+category: Arquitectura de datos
+tags: [arquitectura medallion, data warehouse, capa semántica, ELT]
+publishedAt: 2025-07-02
+translationKey: arquitectura-medallion
+draft: true
+---
+
+En los últimos meses vi cada vez más publicaciones sobre la Arquitectura Medallion, muchas de ellas presentándola como un gran avance en la forma de gestionar datos. Pero si trabajás hace tiempo en data warehousing, probablemente tuviste la misma reacción que yo: esto no es nuevo.
+
+Lo que ahora se llama Bronze, Silver y Gold es, en realidad, una nueva capa de pintura sobre prácticas que seguimos desde hace décadas:
+
+- **Bronze** = área de aterrizaje o espejo (datos crudos)
+- **Silver** = área de staging (datos limpios y conformados)
+- **Gold** = data warehouse o data marts (tablas curadas a nivel de negocio)
+
+## Dónde está la diferencia real
+
+En el data warehousing "clásico", el área de staging, a la que equivale Silver, era normalmente una capa temporal. Era un paso del proceso: limpiar los datos, transformarlos y seguir. Esos datos limpios no solían conservarse ni exponerse a otros.
+
+En la Arquitectura Medallion, Silver es una capa permanente. No es solo un paso: es un destino. Los datos ya están limpios y enriquecidos, y se guardan de forma que otros puedan usarlos: analistas, científicos de datos u otros pipelines.
+
+## La capa semántica tampoco es nueva
+
+Ya sea con Looker, Power BI, MicroStrategy o cubos OLAP de toda la vida, la idea de separar la lógica del almacenamiento existe desde hace mucho tiempo.
+
+## Entonces, ¿qué cambió?
+
+Sobre todo las herramientas. Hoy trabajamos con plataformas escalables y nativas de la nube, como Databricks, Snowflake o BigQuery. Pasamos de ETL a ELT, y escribimos las transformaciones en notebooks, SQL o dbt. Conceptualmente, sin embargo, seguimos haciendo lo de siempre: ingerir, transformar y entregar por capas.
+
+No estoy en contra de ponerle nombres nuevos a las cosas. A veces ayuda a que los equipos se alineen y se entiendan mejor. Pero una buena arquitectura de datos es atemporal, y las mejores "innovaciones" suelen apoyarse en ideas que conocemos desde hace años.
+
+Mi recomendación para quien trabaja en analítica: leer sobre los orígenes del data warehousing, no solo sobre las tecnologías, sino sobre el porqué. Entender qué problemas intentaba resolver y qué principios lo sostienen. Cuando lo hagas, vas a reconocer que muchas arquitecturas "nuevas" son las mismas ideas con otro nombre.
+
+¿Estamos reinventando la rueda o solo cambiándole el nombre?
+
+*Publicado originalmente en [LinkedIn](https://www.linkedin.com/pulse/medallion-architecture-sounds-familiar-mart%C3%ADn-rosenzweig--sytwf/) (versión en inglés).*
