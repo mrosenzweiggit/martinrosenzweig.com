@@ -1,0 +1,12 @@
+---
+import ArticlePage from '../../../components/ArticlePage.astro';
+import { getArticleRoutes } from '../../../lib/articles';
+
+export async function getStaticPaths() {
+  return getArticleRoutes('data', 'es');
+}
+
+const { entry, missing } = Astro.props;
+---
+
+<ArticlePage entry={entry} lang="es" missing={missing} />

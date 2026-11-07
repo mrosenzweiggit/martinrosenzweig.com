@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ui } from '../i18n/ui';
+
+const es = ui.es;
+const en = ui.en;
+---
+
+<BaseLayout title={`${es['notfound.title']} · Martín Rosenzweig`} description={es['notfound.text']} lang="es" path="/404" noindex>
+  <section class="max-w-2xl space-y-4">
+    <h1 class="font-serif text-4xl font-semibold">{es['notfound.title']}</h1>
+    <p class="text-lg">{es['notfound.text']}</p>
+    <p class="text-sm opacity-70">{en['notfound.title']}. {en['notfound.text']}</p>
+    <p class="flex gap-4 pt-2">
+      <a class="underline underline-offset-4" href="/es">Inicio</a>
+      <a class="underline underline-offset-4" href="/en">Home</a>
+    </p>
+  </section>
+</BaseLayout>

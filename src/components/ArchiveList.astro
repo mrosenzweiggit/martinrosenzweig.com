@@ -1,0 +1,42 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { sectionPath } from '../i18n/routes';
+import { getEntriesFor, type Entry } from '../lib/articles';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+const all: Entry[] = [...(await getEntriesFor('data', lang)), ...(await getEntriesFor('softskills', lang))].sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf(),
+);
+const byYear = new Map<number, Entry[]>();
+for (const entry of all) {
+  const year = entry.data.publishedAt.getUTCFullYear();
+  byYear.set(year, [...(byYear.get(year) ?? []), entry]);
+}
+---
+
+<div class="max-w-2xl space-y-10">
+  {
+    [...byYear.entries()].map(([year, items]) => (
+      <section>
+        <h2 class="font-serif text-2xl font-semibold">{year}</h2>
+        <ul class="mt-3 space-y-2">
+          {items.map((entry) => (
+            <li>
+              <a class="underline underline-offset-4" href={`${sectionPath(lang, entry.data.section)}/${entry.data.slug}`}>
+                {entry.data.title}
+              </a>
+              <span class="text-sm opacity-60">
+                · {entry.data.section === 'data' ? t['section.data'] : t['section.softskills']}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>

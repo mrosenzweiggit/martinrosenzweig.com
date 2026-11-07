@@ -1,0 +1,32 @@
+---
+title: "BigQuery partitioning: when it helps and when it doesn't"
+summary: "How to choose a partition column and clustering to cut costs without making queries harder for the team."
+slug: bigquery-partitioning
+lang: en
+section: data
+category: SQL and BigQuery
+tags: [bigquery, cost, modeling]
+publishedAt: 2026-10-05
+translationKey: bigquery-particionado
+draft: true
+---
+
+Partitioning a table in BigQuery sounds like an obvious optimization, but a poor choice of column can cost more than doing nothing. The starting point is understanding how queries are billed: you pay for the data they read, so the goal is for each query to read only what it needs.
+
+## Pick a column your queries already filter on
+
+The best candidate is usually a date or timestamp that appears in almost every `WHERE` clause of your reports. If nobody filters on that column, partitioning adds nothing.
+
+```sql
+SELECT order_id, amount
+FROM `project.sales.orders`
+WHERE order_date BETWEEN '2026-09-01' AND '2026-09-30';
+```
+
+## Clustering as a complement
+
+When queries filter on other high-cardinality columns, such as country or customer, clustering sorts the data inside each partition and reduces what gets read even further.
+
+## Measure before and after
+
+Before changing anything, check how much your most frequent queries read today, then compare after the change. Without that measurement, it is easy to optimize what does not hurt.

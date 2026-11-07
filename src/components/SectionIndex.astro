@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleCard from './ArticleCard.astro';
+import { ui, type Lang } from '../i18n/ui';
+import { sectionPath, type Section } from '../i18n/routes';
+import { getEntriesFor } from '../lib/articles';
+
+interface Props {
+  section: Section;
+  lang: Lang;
+}
+
+const { section, lang } = Astro.props;
+const t = ui[lang];
+const altLang: Lang = lang === 'es' ? 'en' : 'es';
+const entries = await getEntriesFor(section, lang);
+const title = section === 'data' ? t['data.title'] : t['soft.title'];
+const description = section === 'data' ? t['data.description'] : t['soft.description'];
+const path = sectionPath(lang, section);
+const alt = sectionPath(altLang, section);
+---
+
+<BaseLayout title={`${title} · ${t['site.name']}`} description={description} lang={lang} path={path} alt={alt}>
+  <header class="mb-10 max-w-2xl">
+    <h1 class="font-serif text-4xl font-semibold">{title}</h1>
+    <p class="mt-3 text-lg opacity-80">{description}</p>
+  </header>
+
+  {
+    entries.length === 0 ? (
+      <p>{t['section.empty']}</p>
+    ) : (
+      <div class="max-w-2xl">
+        {entries.map((entry) => (
+          <ArticleCard entry={entry} lang={lang} />
+        ))}
+      </div>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { routes } from '../../i18n/routes';
+
+const t = ui.en;
+---
+
+<BaseLayout
+  title={`${t['about.title']} · ${t['site.name']}`}
+  description={t['about.description']}
+  lang="en"
+  path={routes.en.about}
+  alt={routes.es.about}
+>
+  <section class="max-w-2xl space-y-6">
+    <h1 class="font-serif text-4xl font-semibold">{t['about.title']}</h1>
+    <p class="text-lg leading-relaxed">{t['about.body']}</p>
+  </section>
+</BaseLayout>

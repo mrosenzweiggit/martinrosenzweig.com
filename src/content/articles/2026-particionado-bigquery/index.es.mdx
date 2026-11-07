@@ -1,0 +1,32 @@
+---
+title: "Particionado en BigQuery: cuándo ayuda y cuándo no"
+summary: "Cómo elegir la columna de partición y el clustering para bajar costos sin complicarles las consultas al equipo."
+slug: particionado-en-bigquery
+lang: es
+section: data
+category: SQL y BigQuery
+tags: [bigquery, costos, modelado]
+publishedAt: 2026-10-05
+translationKey: bigquery-particionado
+draft: true
+---
+
+Particionar una tabla en BigQuery parece una optimización obvia, pero una mala elección de columna puede salir más cara que no hacer nada. El punto de partida es entender cómo se cobran las consultas: se paga por los datos que se leen, así que el objetivo es que cada consulta lea solo lo que necesita.
+
+## Elegí una columna que filtren las consultas
+
+La mejor candidata suele ser una fecha o timestamp que aparezca en casi todos los `WHERE` de tus reportes. Si nadie filtra por esa columna, la partición no aporta nada.
+
+```sql
+SELECT order_id, amount
+FROM `proyecto.ventas.pedidos`
+WHERE order_date BETWEEN '2026-09-01' AND '2026-09-30';
+```
+
+## Clustering como complemento
+
+Cuando las consultas filtran por otras columnas de alta cardinalidad (por ejemplo, país o cliente), el clustering ordena los datos dentro de cada partición y reduce aún más lo que se lee.
+
+## Lo que conviene medir
+
+Antes de cambiar nada, revisá cuánto se lee hoy en tus consultas más frecuentes y compará después del cambio. Sin esa medición, es fácil optimizar lo que no duele.

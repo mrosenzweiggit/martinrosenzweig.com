@@ -1,25 +1,33 @@
 ---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/newsreader';
 import '../styles/global.css';
 import { languages, ui, type Lang, type UIKey } from '../i18n/ui';
+import { routes } from '../i18n/routes';
 
 interface Props {
   title: string;
   description: string;
   lang: Lang;
+  /** Ruta canónica de la página, sin dominio. */
   path: string;
+  /** Ruta equivalente en el otro idioma, si existe. */
+  alt?: string;
+  noindex?: boolean;
 }
 
-const { title, description, lang, path } = Astro.props;
-const siteUrl = Astro.site ?? new URL('https://martinrosenzweig.com');
-const canonical = new URL(path, siteUrl).toString();
+const { title, description, lang, path, alt, noindex = false } = Astro.props;
+const site = Astro.site ?? new URL('https://martinrosenzweig.com');
+const canonical = new URL(path, site).toString();
+const altLang: Lang = lang === 'es' ? 'en' : 'es';
+const altHref = alt ?? routes[altLang].home;
 const t = (key: UIKey) => ui[lang][key];
-const otherLang = lang === 'es' ? 'en' : 'es';
 const navItems: { key: UIKey; href: string }[] = [
-  { key: 'nav.data', href: `/${lang}/datos` },
-  { key: 'nav.softskills', href: `/${lang}/soft-skills` },
-  { key: 'nav.about', href: `/${lang}/sobre-mi` },
-  { key: 'nav.archive', href: `/${lang}/archivo` },
-  { key: 'nav.contact', href: `/${lang}/contacto` },
+  { key: 'nav.data', href: routes[lang].data },
+  { key: 'nav.softskills', href: routes[lang].softskills },
+  { key: 'nav.about', href: routes[lang].about },
+  { key: 'nav.archive', href: routes[lang].archive },
+  { key: 'nav.contact', href: routes[lang].contact },
 ];
 ---
 
@@ -39,9 +47,10 @@ const navItems: { key: UIKey; href: string }[] = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="es" href={new URL(`/es${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
-    <link rel="alternate" hreflang="en" href={new URL(`/en${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
-    <link rel="alternate" hreflang="x-default" href={new URL(`/es${path.replace(/^\/(es|en)/, '')}`, siteUrl)} />
+    {alt && <link rel="alternate" hreflang={lang} href={canonical} />}
+    {alt && <link rel="alternate" hreflang={altLang} href={new URL(alt, site).toString()} />}
+    {alt && <link rel="alternate" hreflang="x-default" href={new URL(lang === 'es' ? path : alt, site).toString()} />}
+    {noindex && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -54,34 +63,75 @@ const navItems: { key: UIKey; href: string }[] = [
     </a>
 
     <header class="border-b border-[var(--color-border)]">
-      <nav class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-4" aria-label="Principal">
-        <a href={`/${lang}`} class="font-serif text-xl font-semibold">{t('site.name')}</a>
-        <ul class="flex flex-wrap gap-4 text-sm">
-          {navItems.map((item) => (
-            <li>
-              <a class="min-h-11 inline-flex items-center hover:underline" href={item.href}>{t(item.key)}</a>
-            </li>
-          ))}
-        </ul>
-        <div class="flex items-center gap-3 text-sm">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-5 py-3">
+        <a href={routes[lang].home} class="font-serif text-xl font-semibold">{t('site.name')}</a>
+
+        <nav aria-label="Principal" class="hidden md:block">
+          <ul class="flex gap-5 text-sm">
+            {navItems.map((item) => (
+              <li>
+                <a class="inline-flex min-h-11 items-center underline-offset-4 hover:underline" href={item.href}>
+                  {t(item.key)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div class="flex items-center gap-1 text-sm">
           <a
-            class="min-h-11 inline-flex items-center font-medium"
-            href={`/${otherLang}`}
-            hreflang={otherLang}
-            aria-label={t('lang.switch')}
+            class="inline-flex min-h-11 items-center px-2 font-medium"
+            href={altHref}
+            hreflang={altLang}
+            aria-label={`${t('lang.switch')}: ${languages[altLang]}`}
           >
-            {languages[otherLang]}
+            {languages[altLang]}
           </a>
+          <button
+            id="theme-toggle"
+            type="button"
+            class="inline-flex min-h-11 min-w-11 items-center justify-center rounded"
+            aria-label={t('theme.toggle')}
+          >
+            <span aria-hidden="true">◐</span>
+          </button>
+          <details class="relative md:hidden">
+            <summary class="inline-flex min-h-11 cursor-pointer list-none items-center px-2">{t('nav.menu')}</summary>
+            <nav
+              aria-label="Móvil"
+              class="absolute right-0 z-10 mt-2 w-56 rounded border border-[var(--color-border)] bg-[var(--color-bg)] p-4 shadow-sm"
+            >
+              <ul class="flex flex-col gap-3 text-sm">
+                {navItems.map((item) => (
+                  <li>
+                    <a class="inline-flex min-h-11 items-center" href={item.href}>{t(item.key)}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </details>
         </div>
-      </nav>
+      </div>
     </header>
 
     <main id="contenido" class="mx-auto max-w-5xl px-5 py-12">
       <slot />
     </main>
 
-    <footer class="mx-auto max-w-5xl border-t border-[var(--color-border)] px-5 py-8 text-sm">
+    <footer class="mx-auto max-w-5xl border-t border-[var(--color-border)] px-5 py-8 text-sm opacity-80">
       <p>© {new Date().getFullYear()} {t('site.name')}. {t('footer.rights')}</p>
     </footer>
+
+    <script>
+      const root = document.documentElement;
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const isDark = root.dataset.theme
+          ? root.dataset.theme === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const next = isDark ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('theme', next);
+      });
+    </script>
   </body>
 </html>

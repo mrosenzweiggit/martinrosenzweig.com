@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { ui } from '../../i18n/ui';
+import { routes } from '../../i18n/routes';
+
+const t = ui.es;
+const links = [
+  { label: 'Email', href: 'mailto:martin.rosenzweig@gmail.com', text: 'martin.rosenzweig@gmail.com' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/martinrosenzweig/', text: 'linkedin.com/in/martinrosenzweig' },
+  { label: 'GitHub', href: 'https://github.com/mrosenzweiggit', text: 'github.com/mrosenzweiggit' },
+];
+---
+
+<BaseLayout
+  title={`${t['contact.title']} · ${t['site.name']}`}
+  description={t['contact.description']}
+  lang="es"
+  path={routes.es.contact}
+  alt={routes.en.contact}
+>
+  <section class="max-w-2xl space-y-6">
+    <h1 class="font-serif text-4xl font-semibold">{t['contact.title']}</h1>
+    <p class="text-lg leading-relaxed">{t['contact.body']}</p>
+    <ul class="space-y-3">
+      {links.map((link) => (
+        <li>
+          <span class="opacity-70">{link.label}:</span>{' '}
+          <a class="underline underline-offset-4" href={link.href}>{link.text}</a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>

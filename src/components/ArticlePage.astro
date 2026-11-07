@@ -1,0 +1,70 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ui, type Lang } from '../i18n/ui';
+import { sectionPath } from '../i18n/routes';
+import { findTranslation, readingTime, type Entry } from '../lib/articles';
+
+interface Props {
+  entry: Entry;
+  lang: Lang;
+  missing: boolean;
+}
+
+const { entry, lang, missing } = Astro.props;
+const t = ui[lang];
+const { title, summary, slug, section, publishedAt, updatedAt } = entry.data;
+const altLang: Lang = lang === 'es' ? 'en' : 'es';
+const listPath = sectionPath(lang, section);
+const sectionLabel = section === 'data' ? t['section.data'] : t['section.softskills'];
+const accent = section === 'data' ? 'var(--color-accent-data)' : 'var(--color-accent-softskills)';
+const altEntry = await findTranslation(entry, altLang);
+const altPath = altEntry ? `${sectionPath(altEntry.data.lang, section)}/${altEntry.data.slug}` : undefined;
+const originalPath = `${sectionPath(entry.data.lang, section)}/${slug}`;
+const date = publishedAt.toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const minutes = readingTime((entry as { body?: string }).body);
+const { Content } = await render(entry);
+---
+
+<BaseLayout
+  title={`${title} · ${t['site.name']}`}
+  description={summary}
+  lang={lang}
+  path={`${listPath}/${slug}`}
+  alt={altPath}
+  noindex={missing}
+>
+  <nav aria-label="Migas de pan" class="mb-8 text-sm">
+    <a class="underline underline-offset-4" href={listPath}>← {sectionLabel}</a>
+  </nav>
+
+  <article>
+    <p class="text-xs font-medium uppercase tracking-wide" style={`color: ${accent}`}>{sectionLabel}</p>
+    <h1 class="mt-2 max-w-[68ch] font-serif text-4xl font-semibold leading-tight">{title}</h1>
+    <p class="mt-4 max-w-[68ch] text-lg leading-relaxed opacity-80">{summary}</p>
+    <p class="mt-4 text-sm opacity-70">
+      <time datetime={publishedAt.toISOString().slice(0, 10)}>{date}</time> · {minutes} {t['article.reading']}
+      {updatedAt && <span> · {updatedAt.toISOString().slice(0, 10)}</span>}
+    </p>
+
+    {
+      missing ? (
+        <aside class="mt-10 max-w-[68ch] rounded border border-[var(--color-border)] p-5">
+          <p class="font-medium">{t['article.missing']}</p>
+          <a class="mt-2 inline-block underline underline-offset-4" href={originalPath}>
+            {t['article.original']}
+          </a>
+        </aside>
+      ) : (
+        <div class="prose mt-10">
+          <Content />
+        </div>
+      )
+    }
+  </article>
+</BaseLayout>

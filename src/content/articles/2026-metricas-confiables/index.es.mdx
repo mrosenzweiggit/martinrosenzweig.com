@@ -1,0 +1,26 @@
+---
+title: "Métricas confiables: definir una vez y usar en todas partes"
+summary: "Por qué conviene centralizar la lógica de las métricas en una capa semántica, y cómo empezar sin rehacer todo el stack."
+slug: metricas-confiables
+lang: es
+section: data
+category: Analytics
+tags: [semantic layer, métricas, gobierno de datos]
+publishedAt: 2026-10-20
+translationKey: metricas-confiables
+draft: true
+---
+
+Cuando dos reportes muestran números distintos para "ingresos del mes", el problema casi nunca es el dato. Suele ser que cada herramienta define la métrica a su manera.
+
+## El costo de definir métricas en cada reporte
+
+Cada definición duplicada es una fuente de inconsistencias. Cambiar una regla de negocio obliga a buscar y corregir decenas de lugares, y nadie tiene la certeza de haber encontrado todos.
+
+## Una capa semántica como punto único de verdad
+
+La idea es declarar cada métrica una sola vez, con su nombre, su fórmula y sus dimensiones permitidas, y que todas las herramientas la consuman desde ahí. Así el equipo de negocio y el de datos hablan del mismo número.
+
+## Cómo empezar
+
+No hace falta migrar todo de una vez. Empezá por las cinco métricas que más discusiones generan, documentalas, y verificá que los reportes que las usan den el mismo resultado antes de seguir con el resto.
